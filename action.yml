@@ -18,6 +18,9 @@ inputs:
     description: "ZeroTier Central API URL"
     required: false
     default: "https://my.zerotier.com/api/v1"
+  sso_exempt:
+    description: "Exclude from SSO"
+    required: false
 
 runs:
   using: "composite"
@@ -28,6 +31,7 @@ runs:
         API_URL: ${{ inputs.api_url }}
         AUTH_TOKEN: ${{ inputs.auth_token }}
         NETWORK_ID: ${{ inputs.network_id }}
+        SSO_EXEMPT: ${{ inputs.sso_exempt }}
       with:
         main: $GITHUB_ACTION_PATH/main.sh
         post: $GITHUB_ACTION_PATH/post.sh

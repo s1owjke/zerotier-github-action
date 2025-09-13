@@ -21,10 +21,16 @@ echo "⏁  Authorizing Runner to ZeroTier network"
 MAX_RETRIES=10
 RETRY_COUNT=0
 
+if [ "$SSO_EXEMPT" = "true" ]; then
+  MEMBER_CONFIG='{"authorized":true, "ssoExempt":false}'
+else
+  MEMBER_CONFIG='{"authorized":true}'
+fi
+
 while ! curl -s -X POST \
   -H "Authorization: token $AUTH_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Zerotier GitHub Member '"${GITHUB_SHA::7}"'", "description": "Member created by '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"'", "config":{"authorized":true}}' \
+  -d '{"name":"Zerotier GitHub Member '"${GITHUB_SHA::7}"'", "description": "Member created by '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"'", "config":'${MEMBER_CONFIG}'}' \
   "$API_URL/network/$NETWORK_ID/member/${member_id}" | grep '"authorized":true'; do
   RETRY_COUNT=$((RETRY_COUNT + 1))
 
@@ -36,8 +42,8 @@ while ! curl -s -X POST \
   echo "Authorization failed. Retrying in 2 seconds... (Attempt $RETRY_COUNT of $MAX_RETRIES)"
   sleep 2
 done
-
 echo "Member authorized successfully."
+
 echo "⏁  Joining ZeroTier Network ID: $NETWORK_ID"
 case $(uname -s) in
 MINGW64_NT?*)
@@ -49,4 +55,4 @@ MINGW64_NT?*)
   while ! sudo zerotier-cli listnetworks | grep $NETWORK_ID | grep OK; do sleep 0.5; done
   ;;
 esac
-
+echo "Connection is ready."

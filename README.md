@@ -48,3 +48,16 @@ It then uses the supplied `auth_token` to authorize the runner onto the network.
 
 After the workflow has completed, a `post` step automatically cleans
 up by removing the runner from the network.
+
+----
+
+If your network uses SSO authentication, set `sso_exempt` to `true` to allow the GitHub runner to bypass SSO requirements and connect automatically.
+
+```yaml
+- name: ZeroTier
+  uses: zerotier/github-action@v1.0.1
+  with:
+    network_id: ${{ secrets.ZEROTIER_NETWORK_ID }}
+    auth_token: ${{ secrets.ZEROTIER_CENTRAL_TOKEN }}
+    sso_exempt: true
+```
