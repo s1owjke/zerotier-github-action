@@ -22,7 +22,7 @@ MAX_RETRIES=10
 RETRY_COUNT=0
 
 if [ "$SSO_EXEMPT" = "true" ]; then
-  MEMBER_CONFIG='{"authorized":true, "ssoExempt":false}'
+  MEMBER_CONFIG='{"authorized":true, "ssoExempt":true}'
 else
   MEMBER_CONFIG='{"authorized":true}'
 fi
